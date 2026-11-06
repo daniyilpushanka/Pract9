@@ -1,0 +1,53 @@
+import nltk
+import matplotlib.pyplot as plt
+
+nltk.download("gutenberg")
+nltk.download("stopwords")
+
+slova = nltk.corpus.gutenberg.words("carroll-alice.txt")
+
+# Переведення слів у нижній регістр
+slova = [x.lower() for x in slova]
+
+print("Кількість слів:", len(slova))
+print("Унікальних слів:", len(set(slova)))
+print("Різниця:", len(slova) - len(set(slova)))
+
+# 10 найчастіших слів
+top1 = nltk.FreqDist(slova).most_common(10)
+print("\n10 найчастіших слів:", top1)
+
+# Видалення стоп слів
+stop = nltk.corpus.stopwords.words("english")
+clean = [x for x in slova if x.isalpha() and x not in stop]
+
+top2 = nltk.FreqDist(clean).most_common(10)
+print("\n10 найчастіших слів після очищення:", top2)
+
+# Стемінг
+stem = nltk.stem.PorterStemmer()
+top3 = nltk.FreqDist([stem.stem(x) for x in clean]).most_common(10)
+print("\n10 найчастіших слів після стемінгу:", top3)
+
+plt.figure(figsize=(9, 7))
+# Перший графік
+plt.subplot(3, 1, 1)
+plt.bar([x[0] for x in top1], [x[1] for x in top1], color="steelblue")
+plt.title("10 найчастіших слів")
+plt.ylabel("Кількість повторень")
+
+# Другий графік
+plt.subplot(3, 1, 2)
+plt.bar([x[0] for x in top2], [x[1] for x in top2], color="seagreen")
+plt.title("10 найчастіших слів після очищення")
+plt.ylabel("Кількість повторень")
+
+# Третій графік
+plt.subplot(3, 1, 3)
+plt.bar([x[0] for x in top3], [x[1] for x in top3], color="coral")
+plt.title("10 найчастіших слів після стемінгу")
+plt.xlabel("Слова")
+plt.ylabel("Кількість повторень")
+
+plt.tight_layout()
+plt.show()
